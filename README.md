@@ -27,6 +27,10 @@ yolobit-micropython/
 ├── config.py        # chu kỳ task (INTERVAL_TASK1_MS, ...) + tùy chọn WiFi/MQTT cho task_mqtt
 ├── task1.py, task2.py           # task mẫu: in serial, chớp đèn
 ├── task_mqtt.py, task_ntp.py, task_aiot.py, task_event.py  # task kiểm thử từng thư viện lib
+├── task_ai.py, task_collect.py  # task AI inference và thu thập data
+├── model.py             # tham số Tiny NN (do ai/export_model.py tạo)
+├── inference.py         # forward pass thuần MicroPython
+├── ai/                  # Tools train model trên PC (PyTorch) — xem ai/README.md
 ├── pymakr.conf      # PyMakr nhận diện project (chỉ giữ name, ctrl_c_on_connect, safe_boot_on_upload)
 ├── yolobit-micropython.code-workspace  # Mở file này (Open Workspace from File) để PyMakr nhận project và hiện ADD DEVICES
 ├── lib/             # Thư viện OhStem: MQTT, NTP, Sự kiện, AIOT (xem lib/README.md)
@@ -489,6 +493,36 @@ mpremote connect COMx reset
 1. Tải **Thonny** tại https://thonny.org (miễn phí, nhẹ, có sẵn serial/REPL).
 2. Mở Thonny → **Run → Configure interpreter…** → chọn **MicroPython (ESP32)** → chọn đúng cổng COM.
 3. Dùng **File → Open…** rồi upload từng file lên board, hoặc copy-paste code vào REPL.
+
+## AI trên Yolo:Bit — Tiny Neural Network
+
+Project có sẵn khung để chạy **Tiny Neural Network** (classification) trên Yolo:Bit bằng MicroPython:
+
+- **Input:** 2 giá trị từ DHT20 (nhiệt độ, độ ẩm).
+- **Output:** 1 trong 3 nhãn: `binh_thuong`, `nong_am`, `lanh_kho`.
+- **Kiến trúc:** 2 → 8 → 4 → 3 (75 tham số, < 1ms inference trên ESP32).
+
+### Luồng làm việc
+
+1. **Thu thập data** — dùng `task_collect.py` trên Yolo:Bit + `ai/collect_data.py` trên PC → CSV.
+2. **Train model** — trên PC: `cd ai && python train.py --data sample_data.csv` (PyTorch).
+3. **Export** — `python export_model.py` → tạo `model.py` (chứa weights dạng list Python).
+4. **Deploy** — Sync project lên board → `task_ai.py` đọc DHT20, gọi `inference.py`, in kết quả.
+
+### File liên quan
+
+| File | Vị trí | Mô tả |
+|------|--------|-------|
+| `ai/train.py` | PC | Train Tiny NN bằng PyTorch |
+| `ai/export_model.py` | PC | Export model → `model.py` |
+| `ai/generate_sample_data.py` | PC | Tạo data mẫu (synthetic) |
+| `ai/collect_data.py` | PC | Đọc serial từ board → CSV |
+| `model.py` | Board | Tham số model (LABELS, W1, b1, W2, b2, W3, b3, SCALER) |
+| `inference.py` | Board | Forward pass thuần MicroPython |
+| `task_ai.py` | Board | Task chạy inference |
+| `task_collect.py` | Board | Task thu thập data (nút A đổi label, nút B bật/tắt ghi) |
+
+**Hướng dẫn chi tiết:** xem **[`ai/README.md`](ai/README.md)**.
 
 ## Tài liệu tham khảo
 

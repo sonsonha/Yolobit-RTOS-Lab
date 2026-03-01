@@ -13,6 +13,11 @@ INTERVAL_TASK_NTP_MS = 5000
 INTERVAL_TASK_AIOT_MS = 3000
 INTERVAL_TASK_EVENT_MS = 2000
 
+# Task AI
+INTERVAL_TASK_AI_MS = 3000
+# Task thu thập data (bật khi cần thu thập, tắt khi chạy AI)
+INTERVAL_TASK_COLLECT_MS = 2000
+
 # Tùy chọn: WiFi và MQTT cho task_mqtt / NTP (để trống nếu không dùng)
 # WIFI_SSID = "TenWiFi"
 # WIFI_PASSWORD = "MatKhau"

@@ -19,6 +19,8 @@ import task_mqtt
 import task_ntp
 import task_aiot
 import task_event
+import task_ai
+# import task_collect  # Bỏ comment khi cần thu thập data (và comment task_ai)
 
 # Khởi tạo event manager
 event_manager.reset()
@@ -30,6 +32,8 @@ task_mqtt.task_init()
 task_ntp.task_init()
 task_aiot.task_init()
 task_event.task_init()
+task_ai.task_init()
+# task_collect.task_init()  # Bỏ comment khi thu thập data
 
 # Đăng ký task_run() của từng task vào event_manager (timer event)
 event_manager.add_timer_event(config.INTERVAL_TASK1_MS, task1.task_run)
@@ -38,6 +42,8 @@ event_manager.add_timer_event(config.INTERVAL_TASK_MQTT_MS, task_mqtt.task_run)
 event_manager.add_timer_event(config.INTERVAL_TASK_NTP_MS, task_ntp.task_run)
 event_manager.add_timer_event(config.INTERVAL_TASK_AIOT_MS, task_aiot.task_run)
 event_manager.add_timer_event(config.INTERVAL_TASK_EVENT_MS, task_event.task_run)
+event_manager.add_timer_event(config.INTERVAL_TASK_AI_MS, task_ai.task_run)
+# event_manager.add_timer_event(config.INTERVAL_TASK_COLLECT_MS, task_collect.task_run)  # Thu thập data
 
 # In ra serial (Serial Monitor 115200)
 print("Yolobit event_manager - bat dau.")
