@@ -17,6 +17,7 @@ import task1
 import task2
 import task_gpio
 import task_i2c
+import task_semaphore
 
 # Khởi tạo event manager
 event_manager.reset()
@@ -26,15 +27,18 @@ task1.task_init()
 task2.task_init()
 task_gpio.task_init()
 task_i2c.task_init()
+task_semaphore.task_init()
 
 # Đăng ký task_run() của từng task vào event_manager (timer event)
 event_manager.add_timer_event(config.INTERVAL_TASK1_MS, task1.task_run)
 event_manager.add_timer_event(config.INTERVAL_TASK2_MS, task2.task_run)
 event_manager.add_timer_event(config.INTERVAL_TASK_GPIO_MS, task_gpio.task_run)
 event_manager.add_timer_event(config.INTERVAL_TASK_I2C_MS, task_i2c.task_run)
+event_manager.add_timer_event(config.INTERVAL_TASK_SEM_PRODUCER_MS, task_semaphore.task_producer_run)
+event_manager.add_timer_event(config.INTERVAL_TASK_SEM_CONSUMER_MS, task_semaphore.task_consumer_run)
 
 # In ra serial (Serial Monitor 115200)
-print("LAB2 - GPIO + I2C peripherals")
+print("LAB3 - Semaphore + task communication")
 
 while True:
     event_manager.run()
