@@ -18,6 +18,7 @@ import task2
 import task_gpio
 import task_i2c
 import task_semaphore
+import task_smart_controller
 
 # Khởi tạo event manager
 event_manager.reset()
@@ -28,6 +29,7 @@ task2.task_init()
 task_gpio.task_init()
 task_i2c.task_init()
 task_semaphore.task_init()
+task_smart_controller.task_init()
 
 # Đăng ký task_run() của từng task vào event_manager (timer event)
 event_manager.add_timer_event(config.INTERVAL_TASK1_MS, task1.task_run)
@@ -36,9 +38,10 @@ event_manager.add_timer_event(config.INTERVAL_TASK_GPIO_MS, task_gpio.task_run)
 event_manager.add_timer_event(config.INTERVAL_TASK_I2C_MS, task_i2c.task_run)
 event_manager.add_timer_event(config.INTERVAL_TASK_SEM_PRODUCER_MS, task_semaphore.task_producer_run)
 event_manager.add_timer_event(config.INTERVAL_TASK_SEM_CONSUMER_MS, task_semaphore.task_consumer_run)
+event_manager.add_timer_event(config.INTERVAL_TASK_SMART_CTRL_MS, task_smart_controller.task_run)
 
 # In ra serial (Serial Monitor 115200)
-print("LAB3 - Semaphore + task communication")
+print("LAB4 - Tiny smart controller project")
 
 while True:
     event_manager.run()
